@@ -12,6 +12,7 @@
 #define kTabViewTag 38
 #define kContentViewTag 34
 #define IOS_VERSION_7 [[[UIDevice currentDevice] systemVersion] compare:@"7.0" options:NSNumericSearch] != NSOrderedAscending
+#define IOS_VERSION_8 [[[UIDevice currentDevice] systemVersion] compare:@"8.0" options:NSNumericSearch] != NSOrderedAscending
 
 #define kTabHeight 44.0
 #define kTabOffset 56.0
@@ -148,6 +149,9 @@
 @property (nonatomic) UIColor *tabsViewBackgroundColor;
 @property (nonatomic) UIColor *contentViewBackgroundColor;
 
+@property BOOL isIOS7Plus;
+@property BOOL isIOS8Plus;
+
 @end
 
 @implementation ViewPagerController
@@ -203,9 +207,10 @@
 - (void)layoutSubviews {
     
     CGFloat topLayoutGuide = 0.0;
-    if (IOS_VERSION_7) {
+    // don't want/need this for iOS8.. leaving in case it's necessary for iOS7
+    if (self.isIOS7Plus && !self.isIOS8Plus) {
         topLayoutGuide = 20.0;
-        if (self.navigationController && !self.navigationController.navigationBarHidden) {
+        if (self.navigationController && !self.navigationController.navigationBarHidden /* && self.navigationController.navigationBar.translucent */) {
             topLayoutGuide += self.navigationController.navigationBar.frame.size.height;
         }
     }
@@ -773,6 +778,10 @@
     
     self.animatingToTab = NO;
     self.defaultSetupDone = NO;
+
+    self.isIOS7Plus = IOS_VERSION_7;
+    self.isIOS8Plus = IOS_VERSION_8;
+
 }
 - (void)defaultSetup {
     
